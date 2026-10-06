@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# A little something for you 🌻
 
-## Getting Started
+A tiny, interactive digital card made to be opened from a WhatsApp link.
+No backend, no database, no external APIs — a seed grows into a small
+yellow-flower garden, a short message appears, and a playful nod to
+medical studies closes it out. Takes about 15–30 seconds, built mobile-first.
 
-First, run the development server:
+## Stack
+
+- Next.js (App Router) + TypeScript
+- Tailwind CSS v4
+- Framer Motion for the sequencing/transitions
+- All flowers are SVG + CSS — no images, no fonts other than Google Fonts, no external requests
+
+## Run it locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). Tap **Open it** to play the whole sequence.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Build for production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Personalizing the text
 
-To learn more about Next.js, take a look at the following resources:
+Everything editable lives in one file: [src/content/messages.ts](src/content/messages.ts).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```ts
+export const recipientName = "Dafne";
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+export const messages = {
+  cover: { title: "...", subtitle: "...", button: "..." },
+  surprise: { line1: "...", line2: "..." },
+  message: { line1: "...", line2: "...", caption: "..." },
+  medical: { title: "...", patient: `Patient: ${recipientName}`, items: [...] },
+  final: { line1: "...", line2: "...", signature: "...", replay: "..." },
+};
+```
 
-## Deploy on Vercel
+Change `recipientName` or any string in `messages` — nothing else in the
+code needs to be touched.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```text
+src/
+├── app/
+│   ├── page.tsx            # renders the experience
+│   ├── layout.tsx          # fonts + metadata (title, OG, Twitter card)
+│   ├── opengraph-image.tsx # generates the link-preview image (no static asset needed)
+│   └── globals.css         # color tokens, paper texture, safe-area handling
+├── components/
+│   ├── CardExperience.tsx  # scene state machine (cover → surprise → message → medical → final)
+│   ├── CardShell.tsx       # shared "card" frame every scene renders inside
+│   ├── CoverScreen.tsx     # Pantalla 1
+│   ├── FlowerAnimation.tsx # Pantalla 2 — seed-to-garden growth sequence
+│   ├── Flower.tsx          # single SVG flower (seed → stem → leaves → petals)
+│   ├── FlowerGarden.tsx    # arranges a hero flower + smaller companions
+│   ├── MessageScreen.tsx   # Pantalla 3
+│   ├── MedicalNote.tsx     # Pantalla 4
+│   ├── FinalMessage.tsx    # Pantalla final + Replay
+│   └── Particles.tsx       # a few faint floating dots
+└── content/
+    └── messages.ts         # all editable copy + recipient name
+```
+
+## Sharing the link
+
+`metadataBase` in `src/app/layout.tsx` falls back to Vercel's own URL at
+deploy time, so link previews (title, description, OG image) work out of
+the box once deployed. If you're using a custom domain, set it explicitly:
+
+```bash
+NEXT_PUBLIC_SITE_URL=https://your-domain.com
+```
+
+## Deploying
+
+Push this repo to GitHub and import it on [Vercel](https://vercel.com/new) —
+no environment variables or extra configuration are required.

@@ -1,26 +1,83 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --cream: #fdf6e9;
+  --cream-deep: #f7ecd6;
+  --ink: #4a4136;
+  --ink-soft: #8a7f6c;
+  --sunflower: #f6c445;
+  --sunflower-deep: #e0a526;
+  --leaf: #8fa988;
+  --leaf-deep: #6f8d6a;
 }
 
+/*
+ * Named "sunflower"/"leaf" instead of "yellow"/"green" on purpose: Tailwind
+ * v4 ships built-in color scales under those exact names, and a flat
+ * custom token with a colliding name does not reliably win — utilities
+ * like `bg-yellow` silently fail to generate. Distinct names avoid that.
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-cream: var(--cream);
+  --color-cream-deep: var(--cream-deep);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-sunflower: var(--sunflower);
+  --color-sunflower-deep: var(--sunflower-deep);
+  --color-leaf: var(--leaf);
+  --color-leaf-deep: var(--leaf-deep);
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html,
+body {
+  height: 100%;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-sans), sans-serif;
+}
+
+.paper-surface {
+  background-color: var(--cream);
+  background-image:
+    radial-gradient(circle at 20% 15%, rgba(246, 196, 69, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(143, 169, 136, 0.08) 0%, transparent 45%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(74, 65, 54, 0.015) 0px,
+      rgba(74, 65, 54, 0.015) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+}
+
+.app-shell {
+  height: 100dvh;
+  min-height: -webkit-fill-available;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+@keyframes float-particle {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.55;
+  }
+  85% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: translateY(-38px) translateX(6px);
+    opacity: 0;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.particle {
+  animation: float-particle 5.5s ease-in-out infinite;
 }
